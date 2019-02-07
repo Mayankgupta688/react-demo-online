@@ -5,35 +5,40 @@ setInterval(() => {
     refreshTime();
 }, 1000);
 
-function refreshTime() {
-    ReactDOM.render(<ParentDiv />, document.getElementById("root"));
+function getTime() {
+    return new Date().toLocaleTimeString();
 }
 
-function ParentDiv() {
+function refreshTime() {
 
-    var currentTime = new Date().toLocaleTimeString();
+    var currentTime = getTime();
+
+    ReactDOM.render(<ParentDiv currentTime={currentTime}/>, document.getElementById("root"));
+}
+
+function ParentDiv(props) {
 
     return (
         <div>
+            <div>Get Current Time Counter</div>
             <header></header>
             <content>
                 <aside></aside>
-                <div>Hello World</div>
-            </content>
+            </content><br></br>
 
-            <TimeCounter time={currentTime} /><br></br>
+            <TimeCounter time={props.currentTime} age="10" /><br></br>
 
             <footer>
                 <div>
-                    <a href="google.com">Home</a>
-                    <a href="gmail.com">Home</a>
-                    <a href="google.com">Home</a>
+                    <a style={{ marginRight: "15px" }} href="google.com">Google</a>
+                    <a style={{ marginRight: "15px" }} href="gmail.com">Gmail</a>
+                    <a href="google.com">Others</a>
                 </div>
             </footer>
         </div>
     )
 }
 
-function TimeCounter(props) {
-    return <div>Current Time Counter: {props.time}</div>
+function TimeCounter(data) {
+    return <div style={{ marginRight: "15px" }} >Current Time Counter: {data.time}</div>
 }

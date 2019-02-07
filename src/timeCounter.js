@@ -6,28 +6,29 @@ setInterval(() => {
 }, 1000);
 
 function refreshTime() {
-    ReactDOM.render(<ParentDiv />, document.getElementById("root"));
+    ReactDOM.render(<ParentDiv name="Mayank" age="10" />, document.getElementById("root"));
 }
 
-function ParentDiv() {
+function ParentDiv(props) {
 
     var currentTime = new Date().toLocaleTimeString();
 
     return (
         <div>
+            <div style={{ 'backgroundColor': '#44014C', 'width': '300px', 'minHeight': '200px'}}>Hello World All</div>
             <header></header>
             <content>
-                <aside></aside>
-                <div>Hello World</div>
+                <aside>{props.name}</aside>
             </content>
 
+            <TimeCounter time={currentTime} /><br></br>
             <TimeCounter time={currentTime} /><br></br>
 
             <footer>
                 <div>
-                    <a href="google.com">Home</a>
-                    <a href="gmail.com">Home</a>
-                    <a href="google.com">Home</a>
+                    <a style={{ backgroundColor: "#44014C" }} href="google.com">Home</a>
+                    <a style={{ backgroundColor: "#44014C" }} href="gmail.com">Home</a>
+                    <a style={{ backgroundColor: "#44014C" }} href="google.com">Home</a>
                 </div>
             </footer>
         </div>
@@ -35,5 +36,6 @@ function ParentDiv() {
 }
 
 function TimeCounter(props) {
+    props.time = "Mayank";
     return <div>Current Time Counter: {props.time}</div>
 }
