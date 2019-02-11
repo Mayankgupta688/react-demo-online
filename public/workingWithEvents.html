@@ -1,0 +1,26 @@
+<html>
+    <body>
+        <div>
+            <h1>This is the Header</h1>
+            <div id="parent">
+                <div id="child" class="innerData" style="padding: 10px; border: 1px solid red; margin: 10px; width: 300px; height: 50px;">Click Me For Data Mayank</div>
+                <div class="innerData" style="padding: 10px; border: 1px solid red; margin: 10px; width: 300px; height: 50px;">Click Me For Data Ankit</div>
+                <div class="innerData" style="padding: 10px; border: 1px solid red; margin: 10px; width: 300px; height: 50px;">Click Me For Data Tanya</div>
+                <div class="innerData" style="padding: 10px; border: 1px solid red; margin: 10px; width: 300px; height: 50px;">Click Me For Data Sandeep</div>
+                <div class="innerData" style="padding: 10px; border: 1px solid red; margin: 10px; width: 300px; height: 50px;">Click Me For Data Aakash</div>
+                <div class="innerData" style="padding: 10px; border: 1px solid red; margin: 10px; width: 300px; height: 50px;">Click Me For Data Meha</div>
+            </div>
+        </div>
+
+        <script>
+            
+            document.getElementById("parent").addEventListener("click", function(){
+                alert("Parent")
+            })
+
+            document.getElementById("child").addEventListener("click", function(){
+                alert("Child")
+            })
+        </script>
+    </body>
+</html>

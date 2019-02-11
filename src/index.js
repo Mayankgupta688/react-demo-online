@@ -1,44 +1,69 @@
 import React from "react";
 import ReactDOM from 'react-dom';
 
-setInterval(() => {
-    refreshTime();
-}, 1000);
+import './app.css';
 
 function getTime() {
     return new Date().toLocaleTimeString();
 }
 
-function refreshTime() {
 
-    var currentTime = getTime();
+class ParentDiv extends React.Component {
 
-    ReactDOM.render(<ParentDiv currentTime={currentTime}/>, document.getElementById("root"));
+    constructor() {
+        super();
+
+        this.state = {
+            time: (new Date().toLocaleTimeString())
+        }
+
+        this.handleClick = function() {
+            alert(this.state.time);
+        }.bind(this);
+    }
+
+    componentDidMount() {
+        setInterval(() => {
+            this.setState({
+                time: (new Date().toLocaleTimeString())
+            })
+        }, 1000)
+    }
+
+    render() {
+        return (
+            <div className="app-logo">
+                <div>Get Current Time Counter</div>
+                <header></header>
+                <content>
+                    <aside>{this.state.time}</aside>
+                </content><br></br>
+
+                <TimeCounter time={this.state.time} age="10" /><br></br>
+
+                <input type="button" onClick={this.handleClick} value="Click" /><br></br><br></br>
+
+                <button onClick={this.activateLasers}>
+                    Activate Lasers
+                </button>
+
+                <footer>
+                    <div>
+                        <a style={{ marginRight: "15px" }} href="google.com">Google</a>
+                        <a style={{ marginRight: "15px" }} href="gmail.com">Gmail</a>
+                        <a href="google.com">Others</a>
+                    </div>
+                </footer>
+            </div>
+        );
+    }
 }
 
-function ParentDiv(props) {
-
-    return (
-        <div>
-            <div>Get Current Time Counter</div>
-            <header></header>
-            <content>
-                <aside></aside>
-            </content><br></br>
-
-            <TimeCounter time={props.currentTime} age="10" /><br></br>
-
-            <footer>
-                <div>
-                    <a style={{ marginRight: "15px" }} href="google.com">Google</a>
-                    <a style={{ marginRight: "15px" }} href="gmail.com">Gmail</a>
-                    <a href="google.com">Others</a>
-                </div>
-            </footer>
-        </div>
-    )
+function TimeCounter(props) {
+    return <div style={{ marginRight: "15px" }} >Current Time Counter: {props.time}</div>
 }
 
-function TimeCounter(data) {
-    return <div style={{ marginRight: "15px" }} >Current Time Counter: {data.time}</div>
-}
+ReactDOM.render(<ParentDiv />, document.getElementById("root"));
+
+
+

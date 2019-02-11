@@ -1,41 +1,46 @@
 import React from "react";
 import ReactDOM from 'react-dom';
 
+import './app.css';
+
 setInterval(() => {
     refreshTime();
 }, 1000);
 
+function getTime() {
+    return new Date().toLocaleTimeString();
+}
+
 function refreshTime() {
-    ReactDOM.render(<ParentDiv name="Mayank" age="10" />, document.getElementById("root"));
+
+    var currentTime = getTime();
+
+    ReactDOM.render(<ParentDiv currentTime={currentTime}/>, document.getElementById("root"));
 }
 
 function ParentDiv(props) {
 
-    var currentTime = new Date().toLocaleTimeString();
-
     return (
-        <div>
-            <div style={{ 'backgroundColor': '#44014C', 'width': '300px', 'minHeight': '200px'}}>Hello World All</div>
+        <div className="app-logo">
+            <div>Get Current Time Counter</div>
             <header></header>
             <content>
-                <aside>{props.name}</aside>
-            </content>
+                <aside></aside>
+            </content><br></br>
 
-            <TimeCounter time={currentTime} /><br></br>
-            <TimeCounter time={currentTime} /><br></br>
+            <TimeCounter time={props.currentTime} age="10" /><br></br>
 
             <footer>
                 <div>
-                    <a style={{ backgroundColor: "#44014C" }} href="google.com">Home</a>
-                    <a style={{ backgroundColor: "#44014C" }} href="gmail.com">Home</a>
-                    <a style={{ backgroundColor: "#44014C" }} href="google.com">Home</a>
+                    <a style={{ marginRight: "15px" }} href="google.com">Google</a>
+                    <a style={{ marginRight: "15px" }} href="gmail.com">Gmail</a>
+                    <a href="google.com">Others</a>
                 </div>
             </footer>
         </div>
     )
 }
 
-function TimeCounter(props) {
-    props.time = "Mayank";
-    return <div>Current Time Counter: {props.time}</div>
+function TimeCounter(data) {
+    return <div style={{ marginRight: "15px" }} >Current Time Counter: {data.time}</div>
 }
