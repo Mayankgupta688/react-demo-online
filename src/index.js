@@ -1,69 +1,109 @@
 import React from "react";
 import ReactDOM from 'react-dom';
 
-import './app.css';
+class EmployeeDetails extends React.Component {
+    constructor(props) {
+        super(props);
 
-function getTime() {
-    return new Date().toLocaleTimeString();
-}
-
-
-class ParentDiv extends React.Component {
-
-    constructor() {
-        super();
-
-        this.state = {
-            time: (new Date().toLocaleTimeString())
+        this.styles= { 
+            parentDiv: {
+                border: '1px solid red',
+                margin: '10px',
+                padding: '10px'
+            }
         }
 
-        this.handleClick = function() {
-            alert(this.state.time);
-        }.bind(this);
+        this.state = {
+            name: "Mayank Gupta",
+            counter: 0,
+            employeeList: [{    
+                name: "a",
+                age: 10,
+                designation: "D",
+            }, {
+                name: "b",
+                age: 11,
+                designation: "D1"
+            }, {
+                name: "c",
+                age: 12,
+                designation: "D2"
+            }]  
+        }
+
+        this.addEmployee = this.addEmployee.bind(this);
     }
 
-    componentDidMount() {
-        setInterval(() => {
-            this.setState({
-                time: (new Date().toLocaleTimeString())
-            })
-        }, 1000)
+    addEmployee() {
+
+        this.setState({
+            counter: this.state.counter + 1
+        });
+
+        var newEmployeeList = this.state.employeeList;
+
+        newEmployeeList.push({
+            name: "a",
+            age: 10,
+            designation: "D",
+            counter: this.state.counter
+        });
+        
+        this.setState({
+            globalData: "New Data",
+            name: "Anshul Gupta",
+            employeeList: newEmployeeList
+        })
     }
 
     render() {
-        return (
-            <div className="app-logo">
-                <div>Get Current Time Counter</div>
-                <header></header>
-                <content>
-                    <aside>{this.state.time}</aside>
-                </content><br></br>
 
-                <TimeCounter time={this.state.time} age="10" /><br></br>
+        
+        if(this.state.employeeList.length > 0) {
 
-                <input type="button" onClick={this.handleClick} value="Click" /><br></br><br></br>
+            return (
+                
+                this.state.employeeList.map((employee, index) => {
 
-                <button onClick={this.activateLasers}>
-                    Activate Lasers
-                </button>
+                    return (
+                        <div key={employee.name}>
+                            <div style={this.styles.parentDiv}>
+                                <div>
+                                    <b>Name: Employee Id {index}</b>
+                                </div>
+                                <div>
+                                    <b>Name: {employee.name}</b>
+                                </div>
+                                <div>
+                                    <b>Age: {employee.age}</b>
+                                </div>
+                                <div>
+                                    <b>Designation: {employee.designation}</b>
+                                </div>
+                            </div>
+                        
+                        </div>
+                    )
+                })
+                
+            )
 
-                <footer>
-                    <div>
-                        <a style={{ marginRight: "15px" }} href="google.com">Google</a>
-                        <a style={{ marginRight: "15px" }} href="gmail.com">Gmail</a>
-                        <a href="google.com">Others</a>
-                    </div>
-                </footer>
-            </div>
-        );
+        } else {
+
+            return (
+                <div>
+                    <b>{this.state.name}</b><br></br><br></br>
+                    <b>{this.state.globalData}</b><br></br><br></br>
+                    <input type="button" value="Click To Add Employee" onClick={this.addEmployee} />
+                </div>
+            )
+
+        }
     }
 }
 
-function TimeCounter(props) {
-    return <div style={{ marginRight: "15px" }} >Current Time Counter: {props.time}</div>
-}
-
-ReactDOM.render(<ParentDiv />, document.getElementById("root"));
-
-
-
+ReactDOM.render((
+    <div>
+        <EmployeeDetails />
+    </div>
+), document.getElementById("root"));
