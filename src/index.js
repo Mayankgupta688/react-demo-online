@@ -1,101 +1,136 @@
 import React from "react";
 import ReactDOM from 'react-dom';
+import axios from 'axios';
 
 class EmployeeDetails extends React.Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            employeeList: [], 
+            newEmployeeName: "",
+            newEmployeeAge: 0,
+            newEmployeeDesignation: ""
+        }
 
         this.styles= { 
             parentDiv: {
                 border: '1px solid red',
                 margin: '10px',
                 padding: '10px'
-            }
-        }
-
-        this.state = {
-            name: "Mayank Gupta",
-            counter: 0,
-            employeeList: [{    
-                name: "a",
-                age: 10,
-                designation: "D",
-            }, {
-                name: "b",
-                age: 11,
-                designation: "D1"
-            }, {
-                name: "c",
-                age: 12,
-                designation: "D2"
-            }]  
+            }, newEmployee: {
+                border: '1px solid red',
+                margin: '10px',
+                padding: '10px'
+            }   
         }
 
         this.addEmployee = this.addEmployee.bind(this);
     }
 
-    addEmployee() {
-
-        this.setState({
-            counter: this.state.counter + 1
-        });
-
-        var newEmployeeList = this.state.employeeList;
-
-        newEmployeeList.push({
-            name: "a",
-            age: 10,
-            designation: "D",
-            counter: this.state.counter
-        });
-        
-        this.setState({
-            globalData: "New Data",
-            name: "Anshul Gupta",
-            employeeList: newEmployeeList
+    componentDidMount() {
+        axios.get("http://5c055de56b84ee00137d25a0.mockapi.io/api/v1/employees").then((response) => {
+            this.setState({
+                employeeList: response.data
+            })
         })
     }
 
-    render() {
+    deleteEmployee(empId) {
+        alert(`Deleting Employee with Id ${empId}`);
 
-        
-        if(this.state.employeeList.length > 0) {
+        var employeeList = this.state.employeeList;
 
+        var newEmpList = employeeList.filter((employee) => {
+            if(employee.id !== empId) {
+                return true;
+            } else return false;
+        })
+        this.setState({
+            employeeList: newEmpList
+        })
+    }
+
+    getEmployeeList() {
+        return this.state.employeeList.map((employee, index) => {
             return (
-                
-                this.state.employeeList.map((employee, index) => {
-
-                    return (
-                        <div key={employee.name}>
-                            <div style={this.styles.parentDiv}>
-                                <div>
-                                    <b>Name: Employee Id {index}</b>
-                                </div>
-                                <div>
-                                    <b>Name: {employee.name}</b>
-                                </div>
-                                <div>
-                                    <b>Age: {employee.age}</b>
-                                </div>
-                                <div>
-                                    <b>Designation: {employee.designation}</b>
-                                </div>
-                            </div>
-                        
+                <div key={employee.name}>
+                    <div style={this.styles.parentDiv}>
+                        <div>
+                            <b>Id: {employee.id}</b>
                         </div>
-                    )
-                })
+                        <div>
+                            <b>Name: {employee.name}</b>
+                        </div>
+                        <div>
+                            <b>Age: {employee.age}</b>
+                        </div>
+                        <div>
+                            <b>Designation: {employee.designation}</b>
+                        </div><br></br>
+                        <input type="button" value="Delete Employee" onClick={() => this.deleteEmployee(employee.id)} />
+                    </div>
                 
+                </div>
+            )
+        })
+    }
+
+    addEmployee() {
+        this.setState({
+            employeeList: this.state.employeeList.concat({
+                id: this.state.employeeList.length + 1,
+                name: this.state.newEmployeeName,
+                age: this.state.newEmployeeAge,
+                designation: this.state.newEmployeeDesignation
+            }),
+            newEmployeeName: '',
+            newEmployeeAge: '',
+            newEmployeeDesignation: ''
+        })
+    }
+
+    handleInput(event) {
+        if(event.target.classList.contains("emp-age")) {
+            this.setState({
+                newEmployeeAge: event.target.value
+            })
+        } else if(event.target.classList.contains("emp-name")) {
+            this.setState({
+                newEmployeeName: event.target.value
+            })
+        } else {
+            this.setState({
+                newEmployeeDesignation: event.target.value
+            })
+        }
+    }
+
+    render() {
+        if(this.state.employeeList.length > 0) {
+            return (
+                <div>
+                    <div style={this.styles.newEmployee}>
+                        <b>Add New Employee</b>
+                        <div>
+                            <p>Enter Name: <input type="text" className="emp-name" value={this.state.newEmployeeName} onChange={(e) => this.handleInput(e)} /></p>
+                        </div>
+                        <div>
+                            <p>Enter Age: <input type="text" className="emp-age" value={this.state.newEmployeeAge} onChange={(e) => this.handleInput(e)} /></p>
+                        </div>
+                        <div>
+                            <p>Enter Designation: <input type="text" className="emp-designation" value={this.state.newEmployeeDesignation} onChange={(e) => this.handleInput(e)} /></p>
+                        </div>
+
+                        <input type="button" value="Click To Add" onClick={this.addEmployee} />
+                    </div><br></br>
+                    {this.getEmployeeList()}
+                </div>
             )
 
         } else {
-
             return (
-                <div>
-                    <b>{this.state.name}</b><br></br><br></br>
-                    <b>{this.state.globalData}</b><br></br><br></br>
-                    <input type="button" value="Click To Add Employee" onClick={this.addEmployee} />
-                </div>
+                <div>Rendering User Data.....</div>
             )
 
         }
