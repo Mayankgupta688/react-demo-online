@@ -1,144 +1,108 @@
 import React from "react";
 import ReactDOM from 'react-dom';
-import axios from 'axios';
+import axios from "axios";
 
-class EmployeeDetails extends React.Component {
-    constructor(props) {
-        super(props);
+class EmployeeList extends React.Component {
+    constructor() {
+        super();
 
         this.state = {
-            employeeList: [], 
-            newEmployeeName: "",
-            newEmployeeAge: 0,
-            newEmployeeDesignation: ""
+            employeeDetailList: [],
+            newName: "Dummy Name",
+            newCreatedAt: "Dummy Date"
         }
 
-        this.styles= { 
-            parentDiv: {
-                border: '1px solid red',
+        this.styles = {
+            employeeDetails: {
+                padding: '10px',
                 margin: '10px',
-                padding: '10px'
-            }, newEmployee: {
-                border: '1px solid red',
+                border: '1px solid red'
+            }, addEmployee: {
+                padding: '10px',
                 margin: '10px',
-                padding: '10px'
-            }   
+                border: '1px solid red'
+            }
         }
 
-        this.addEmployee = this.addEmployee.bind(this);
     }
 
     componentDidMount() {
         axios.get("http://5c055de56b84ee00137d25a0.mockapi.io/api/v1/employees").then((response) => {
             this.setState({
-                employeeList: response.data
+                employeeDetailList: response.data
             })
         })
     }
 
-    deleteEmployee(empId) {
-        alert(`Deleting Employee with Id ${empId}`);
+    deleteEmployee = (employeeId) => {
+        alert("Employee Id to be deleted: " + employeeId);
 
-        var employeeList = this.state.employeeList;
-
-        var newEmpList = employeeList.filter((employee) => {
-            if(employee.id !== empId) {
+        var newEmployeeList = this.state.employeeDetailList.filter((employee) => {
+            if(employee.id === employeeId) {
+                return false;
+            } else {
                 return true;
-            } else return false;
+            }
         })
+
         this.setState({
-            employeeList: newEmpList
+            employeeDetailList: newEmployeeList
+        });
+
+    }
+
+    addEmployee = () => {
+        this.setState({
+            employeeDetailList: [...this.state.employeeDetailList, {
+                id: this.state.employeeDetailList.length + 1,
+                name: this.state.newName,
+                createdAt: this.state.newCreatedAt
+            }], 
+            newName: "",
+            newCreatedAt: ""
         })
     }
 
-    getEmployeeList() {
-        return this.state.employeeList.map((employee, index) => {
+    iterateEmployees() {
+
+        var outputJSX = this.state.employeeDetailList.map((employee) => {
             return (
-                <div key={employee.name}>
-                    <div style={this.styles.parentDiv}>
-                        <div>
-                            <b>Id: {employee.id}</b>
-                        </div>
-                        <div>
-                            <b>Name: {employee.name}</b>
-                        </div>
-                        <div>
-                            <b>Age: {employee.age}</b>
-                        </div>
-                        <div>
-                            <b>Designation: {employee.designation}</b>
-                        </div><br></br>
-                        <input type="button" value="Delete Employee" onClick={() => this.deleteEmployee(employee.id)} />
-                    </div>
-                
+                <div style={this.styles.employeeDetails} key={employee.id}>
+                    <div>Id: {employee.id}</div>
+                    <div>Name: {employee.name}</div>
+                    <div>Created At: {employee.createdAt}</div><br></br>
+                    <input type="button" value="Delete" onClick={(e) => this.deleteEmployee(employee.id)} />
                 </div>
             )
         })
-    }
 
-    addEmployee() {
-        this.setState({
-            employeeList: this.state.employeeList.concat({
-                id: this.state.employeeList.length + 1,
-                name: this.state.newEmployeeName,
-                age: this.state.newEmployeeAge,
-                designation: this.state.newEmployeeDesignation
-            }),
-            newEmployeeName: '',
-            newEmployeeAge: '',
-            newEmployeeDesignation: ''
-        })
+        return outputJSX;
     }
 
     handleInput(event) {
-        if(event.target.classList.contains("emp-age")) {
-            this.setState({
-                newEmployeeAge: event.target.value
-            })
-        } else if(event.target.classList.contains("emp-name")) {
-            this.setState({
-                newEmployeeName: event.target.value
-            })
-        } else {
-            this.setState({
-                newEmployeeDesignation: event.target.value
-            })
-        }
+        this.setState({
+            [event.target.attributes["data-property"].value]: event.target.value
+        });
     }
 
     render() {
-        if(this.state.employeeList.length > 0) {
-            return (
-                <div>
-                    <div style={this.styles.newEmployee}>
-                        <b>Add New Employee</b>
-                        <div>
-                            <p>Enter Name: <input type="text" className="emp-name" value={this.state.newEmployeeName} onChange={(e) => this.handleInput(e)} /></p>
-                        </div>
-                        <div>
-                            <p>Enter Age: <input type="text" className="emp-age" value={this.state.newEmployeeAge} onChange={(e) => this.handleInput(e)} /></p>
-                        </div>
-                        <div>
-                            <p>Enter Designation: <input type="text" className="emp-designation" value={this.state.newEmployeeDesignation} onChange={(e) => this.handleInput(e)} /></p>
-                        </div>
-
-                        <input type="button" value="Click To Add" onClick={this.addEmployee} />
+        return (
+            <div>
+                <div style={this.styles.addEmployee}>
+                    <div>
+                        Add Name: <input type="text" data-property="newName" value={this.state.newName} onChange={(e) => this.handleInput(e)}></input>
                     </div><br></br>
-                    {this.getEmployeeList()}
+                    <div>
+                        Add CreatedAt: <input type="text" data-property="newCreatedAt" className="user_created_by" value={this.state.newCreatedAt} onChange={(e) => this.handleInput(e)}></input>
+                    </div><br></br>
+                    <div>
+                        <input type="button" value="Add Employee" onClick={this.addEmployee} />
+                    </div>
                 </div>
-            )
-
-        } else {
-            return (
-                <div>Rendering User Data.....</div>
-            )
-
-        }
+                <div>{this.iterateEmployees()}</div>
+            </div>
+        )
     }
 }
 
-ReactDOM.render((
-    <div>
-        <EmployeeDetails />
-    </div>
-), document.getElementById("root"));
+ReactDOM.render(<EmployeeList />, document.getElementById("root"))
