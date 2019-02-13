@@ -2,14 +2,54 @@ import React from "react";
 import ReactDOM from 'react-dom';
 import axios from "axios";
 
+class AddEmployee extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            newUser: "",
+            newCreatedAt: ""
+        }
+
+        this.addEmployeeFromChild = this.addEmployeeFromChild.bind(this);
+        this.handleInput = this.handleInput.bind(this);
+    }
+
+    handleInput(event) {
+        this.setState({
+            [event.target.attributes["data-property"].value]: event.target.value
+        });
+    }
+
+    addEmployeeFromChild() {
+        debugger;
+        this.props.addEmployee(this.state.newUser, this.state.newCreatedAt);
+    }
+
+    render() {
+        return (
+            <div>
+                <div>
+                    Add Name: <input type="text" data-property="newUser" value={this.state.newUser} onChange={(e) => this.handleInput(e)}></input>
+                </div><br></br>
+                <div>
+                    Add CreatedAt: <input type="text" data-property="newCreatedAt" className="user_created_by" value={this.state.newCreatedAt} onChange={(e) => this.handleInput(e)}></input>
+                </div><br></br>
+                <div>
+                    <input type="button" value="Add Employee" onClick={this.addEmployeeFromChild} />
+                </div>
+            </div>
+        )
+    }
+}
+
+
 class EmployeeList extends React.Component {
     constructor() {
         super();
 
         this.state = {
-            employeeDetailList: [],
-            newName: "Dummy Name",
-            newCreatedAt: "Dummy Date"
+            employeeDetailList: []
         }
 
         this.styles = {
@@ -31,7 +71,7 @@ class EmployeeList extends React.Component {
             this.setState({
                 employeeDetailList: response.data
             })
-        })
+        });
     }
 
     deleteEmployee = (employeeId) => {
@@ -51,15 +91,13 @@ class EmployeeList extends React.Component {
 
     }
 
-    addEmployee = () => {
+    addEmployee = (name, createdAt) => {
         this.setState({
             employeeDetailList: [...this.state.employeeDetailList, {
                 id: this.state.employeeDetailList.length + 1,
-                name: this.state.newName,
-                createdAt: this.state.newCreatedAt
-            }], 
-            newName: "",
-            newCreatedAt: ""
+                name: name,
+                createdAt: createdAt
+            }]
         })
     }
 
@@ -79,30 +117,18 @@ class EmployeeList extends React.Component {
         return outputJSX;
     }
 
-    handleInput(event) {
-        this.setState({
-            [event.target.attributes["data-property"].value]: event.target.value
-        });
-    }
-
     render() {
         return (
             <div>
                 <div style={this.styles.addEmployee}>
-                    <div>
-                        Add Name: <input type="text" data-property="newName" value={this.state.newName} onChange={(e) => this.handleInput(e)}></input>
-                    </div><br></br>
-                    <div>
-                        Add CreatedAt: <input type="text" data-property="newCreatedAt" className="user_created_by" value={this.state.newCreatedAt} onChange={(e) => this.handleInput(e)}></input>
-                    </div><br></br>
-                    <div>
-                        <input type="button" value="Add Employee" onClick={this.addEmployee} />
-                    </div>
+                    <AddEmployee addEmployee={this.addEmployee} />
                 </div>
                 <div>{this.iterateEmployees()}</div>
             </div>
         )
     }
 }
+
+
 
 ReactDOM.render(<EmployeeList />, document.getElementById("root"))
