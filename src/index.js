@@ -1,52 +1,57 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-class MyLifeCycle extends React.Component {
+class ParentComponent extends React.Component {
     constructor() {
         super();
         this.state = {
-            name: "Mayank"
+            firstName: "Mayank",
+            user: {
+                firstName: "Mayank",
+                lastName: "Gupta"
+            }
         }
     }
 
-    render() {
-        return <div>My Name: {this.state.name}</div>
-    }
-
     componentWillMount() {
-        alert("My Component is going to be Mounted")
-    }
-
-    componentDidMount() {
-        alert("This Component got Mounted");
-
-        setTimeout(() => {
-            alert("Changing Data")
+        setInterval(() =>{
             this.setState({
-                name: 'Anshul'
+                user: {
+                    firstName: "Anshul",
+                    lastName: "Gupta"
+                }
             })
-        }, 5000)
+        });
     }
 
-    componentWillUpdate() {
-        alert("This Component Chnged the State")
+    render() {
+        return(
+            <div>
+                <b>This is Regular Component</b>
+                <RegularComponent name={this.state.user.firstName} />
+
+                <b>This is Pure Component</b>
+                <PureComponentData name={this.state.user.firstName} />
+            </div>
+        )
     }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return true;
-    }
-
-    componentDidUpdate() {
-        alert("Component is Updated..")
-    }
-
-    componentWillUnmount() {
-        
-    }
-
-    
-
-    
 }
 
-ReactDOM.render(<MyLifeCycle />, document.getElementById("root"))
+class RegularComponent extends React.Component {
+    render() {
+        return (
+            <h1>Name: {this.props.name}</h1>
+        )
+    }
+}
+
+
+class PureComponentData extends React.PureComponent {
+    render() {
+        return (
+            <h1>Name: {this.props.name}</h1>
+        )
+    }
+}
+
+ReactDOM.render(<ParentComponent />, document.getElementById("root"))
