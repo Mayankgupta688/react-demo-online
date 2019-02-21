@@ -1,57 +1,48 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from "react";
+import ReactDOM from "react-dom";
+import { BrowserRouter, Route, Link } from "react-router-dom";
 
-class ParentComponent extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            firstName: "Mayank",
-            user: {
-                firstName: "Mayank",
-                lastName: "Gupta"
-            }
-        }
-    }
+class RoutingPage extends React.Component {
 
-    componentWillMount() {
-        setInterval(() =>{
-            this.setState({
-                user: {
-                    firstName: "Anshul",
-                    lastName: "Gupta"
-                }
-            })
-        });
+    componentDidUpdate() {
+        console.log("Parent Component Rerendered")
     }
 
     render() {
         return(
-            <div>
-                <b>This is Regular Component</b>
-                <RegularComponent name={this.state.user.firstName} />
+            <BrowserRouter>
+                <div>
+                    <b>Parent Component</b><br></br><br></br>
+                    <nav>
+                        <Link style={{marginRight: '15px'}} to="/">Home</Link>
+                        <Link style={{marginRight: '15px'}} to="/about">About</Link>
+                        <Link style={{marginRight: '15px'}} to="/help">Help</Link>
+                        <a href="/about">About</a>
+                    </nav>
 
-                <b>This is Pure Component</b>
-                <PureComponentData name={this.state.user.firstName} />
-            </div>
+
+                    <h1>The Component Below will update on Route Changes</h1>
+                    <Route exact path="/" component={HomeComponent} />
+                    <Route exact path="/about" component={AboutComponent} />
+                    <Route exact path="/help" component={HelpComponent} />
+                    
+                </div>
+            </BrowserRouter>
         )
     }
 }
 
-class RegularComponent extends React.Component {
-    render() {
-        return (
-            <h1>Name: {this.props.name}</h1>
-        )
-    }
+
+function HomeComponent() {
+    return <div>Home Page</div>
 }
 
-
-class PureComponentData extends React.PureComponent {
-    render() {
-        return (
-            <h1>Name: {this.props.name}</h1>
-        )
-    }
+function AboutComponent() {
+    return <div>About Page</div>
 }
 
-ReactDOM.render(<ParentComponent />, document.getElementById("root"))
+function HelpComponent() {
+    return <div>Help Page</div>
+}
+
+ReactDOM.render(<RoutingPage />, document.getElementById("root"))
